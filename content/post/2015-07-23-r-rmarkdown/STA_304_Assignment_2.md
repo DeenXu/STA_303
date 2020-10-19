@@ -92,8 +92,8 @@ According to GSS user's guide for this data, respondents has an unequal
 probability of being selected, thus data sample was not a good representative of 
 the target population, results might be over or under-represented and biases are
 involved.
-```{r}
-new_data %>% ggplot(aes(x = age)) + geom_histogram()
+```{r, echo=FALSE}
+new_data %>% ggplot(aes(x = age)) + geom_histogram(bins = 50)
 ```
 From the above graph, it is noticeable that there is a significant number of 
 observations at the age of 80. This indicates it might be a biased sample which 
