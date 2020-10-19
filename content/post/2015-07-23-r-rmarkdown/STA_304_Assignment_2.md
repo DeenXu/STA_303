@@ -1,7 +1,7 @@
 ---
 title: "Do Young and Highly Educated People Tend to Give Birth at an Older Age?"
 author: "Deen Xu, Yinghan Zhang"
-date: 2020-07-23
+date: 2020-10-19
 
 output:
   pdf_document: default
@@ -10,7 +10,8 @@ output:
 
 
 ---
-*Code and data supporting this analysis is available at https://bit.ly/2IBlWS0*
+*Code and data supporting this analysis is available at* 
+*https://sta-304-assignment-2.netlify.app/*
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(ggplot2)
