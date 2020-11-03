@@ -10,7 +10,8 @@ output:
 
 
 ---
-##Do Young and Highly Educated People Tend to Give Birth at an Older Age?
+## Do Young and Highly Educated People Tend to Give Birth at an Older Age?
+
 *Code and data supporting this analysis is available at* 
 *https://sta-304-assignment-2.netlify.app/*
 ```{r setup, include=FALSE}
