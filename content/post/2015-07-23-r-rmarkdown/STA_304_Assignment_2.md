@@ -1,5 +1,5 @@
 ---
-title: "Do Young and Highly Educated People Tend to Give Birth at an Older Age?"
+title: "STA 304 Problem Set 2"
 author: "Deen Xu, Yinghan Zhang"
 date: 2020-10-19
 
@@ -10,6 +10,7 @@ output:
 
 
 ---
+#Do Young and Highly Educated People Tend to Give Birth at an Older Age?
 *Code and data supporting this analysis is available at* 
 *https://sta-304-assignment-2.netlify.app/*
 ```{r setup, include=FALSE}
