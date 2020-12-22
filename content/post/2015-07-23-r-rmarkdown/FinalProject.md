@@ -23,20 +23,14 @@ data1_new = na.omit(data1
                     %>% mutate_at(vars(id_news, after_national), ~as.factor(.)) 
                     %>% mutate(year = as.integer(year)))
 ```
-# Abstract
+## Abstract
 This paper will reproduce the paper 'Newspapers And Advertising Revenues' by using the same dataset about French daily newspapers and French television from 1960 and 1974 to compute difference in differences estimates of the different effects of low advertising revenues caused by introduction of advertising on television on local and national News content and prices, and local Newspaper will be control group, national newspapers will be treatment group. The result shows the effect on national newspapers is more significant than on local newspapers.
 
-# Key Words
-Economy
-
-Newspaper Industry
-
-Empirical Analysis
-
-Difference in Difference
+## Key Words
+Economy, Newspaper Industry,Empirical Analysis, Difference in Difference
 
 
-# Introduction
+## Introduction
 
 Due to major newspaper companies’ continuously decreasing in employment of journalists, smaller newsrooms, fewer investigative reporters, and increasing dependence on purchasing news from wire services, people have been concerning about if the newspaper industry can produce high quality news (Angelucci & Cagé, 2019). 
 
@@ -59,7 +53,7 @@ The trends in Figure 1 shows that from 1980 to 2015 in the United States, the av
 
 To reproducing the paper Newspapers in Times of Low Advertising Revenues written by Angelucci and Cag Cagé, this paper will use difference in differences method to examine the effect of television advertisement on newspaper by using a dataset of French newspapers between 1960 and 1974 provided by Angelucci and Cag Cagé. In the Methodology part, I will introduce the data and model I use to analyze Then, I will show and give a summary about the result of my model in results and discussion parts.
 
-# Methodology
+## Methodology
 
 The data I used is provided by Angelucci and Cagé, it includes annual data on local and national newspapers between 1960 and 1974. The dataset includes various variables about the newspaper such as its sale price, news hole, year published, and number of pages. But I choose some of them to fit my model. After my selection, it includes information about if the newspaper is both national and published after 1967, the number of journalists it published, its subscription price and listed advertisement price in Euros, and its publish year. 
 
@@ -79,7 +73,7 @@ $$ y_{n,t} = \alpha + \beta_1(D_{After} * D_{National}) + \lambda_n + \gamma_t +
 The n and t means newspapers code and years from 1960 to 1974. And $\lambda_n$ and $\gamma_t$ are fixed effects. This approach prevents cross-sectional variations from driving our results (Angelucci & Cagé, 2019). $\epsilon_{n,t}$ is a newspaper-year shock. 
 The y is our response variable, I will choose the number of journalists, listed ad price and subscription price as response variables to find the effects on news content, ad price and sale price. The $D_{After} * D_{National}$ is the dummy variable, it is 1 when the newspaper was both national and published after 1967. Also, the coefficient $\beta_1$ represents the annual effect of the government announcement on national newspaper's response variables such as sale price compared to local newspapers. The $\alpha$ is the interpret variable.
 
-# Results
+## Results
 ```{r, include=FALSE }
 journ = lm(log(nb_journ)~after_national + id_news + year, data = data1_new)
 summary(journ)
@@ -106,7 +100,7 @@ Also, according to the model, we can estimate that for one unit  increase in yea
 
 Finally, the r square values for these three models are 0.9826, 0.8777, and 0.8057.
 
-# Discussion
+## Discussion
 
 The results of three linear relation models indicate that the effect of television advertising in France has a larger impact on national newspaper content and listed ad price compared to local newspaper, and similar impact on sale price.
 
@@ -116,7 +110,7 @@ Moreover, the r square values indicate all three response variables have strong 
 
 This analysis bases on a dataset about French from 1960 to 1974, which could be a outdated dataset, which we could not apply for nowadays situations since there are more influential variables such as technology improvement. To improve this, we can investigate the technology effect on newspaper's content and price. We can collect a new dataset from newspaper, television companies, and smart phone companies, which includes data about newspapers after the first smartphone published. Then we can use similar difference in differences method to analyze the effect of technology improvement on both local and national newspaper.
 
-# References
+## References
 
 Angelucci, C., & Cagé, J. (2019). Newspapers in Times of Low Advertising 
   Revenues. American Economic Journal: Microeconomics, 11(3), 319–364. 
