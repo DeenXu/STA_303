@@ -1,7 +1,7 @@
 ---
 title: "Finding the Effect of Low advertising Revenues on  News Content and Prices"
 author: "Deen Xu"
-date: Dec 22, 2020-12-22
+date: 2020-12-22
 output:
   html_document:
     df_print: paged
