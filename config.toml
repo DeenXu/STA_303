@@ -15,6 +15,10 @@ ignoreFiles = [ "_cache$", "\\.knit\\.md$", "\\.utf8\\.md$"]
 [[menu.main]]
     name = "GitHub"
     url = "https://github.com/DeenXu/STA_303"
+    
+[[menu.main]]
+    name = "Email"
+    url = "deen.xu@mail.utoronto.ca"
 
 
 [params]
