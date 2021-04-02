@@ -5,7 +5,6 @@ date: 2021-2-23
 output:
   html_document:
     df_print: paged
-subtitle: Topic C
 ---
 
 
