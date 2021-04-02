@@ -1,19 +1,7 @@
 ---
-title: "sta303_mixed_assignment_1"
-author: "Deen Xu"
-date: 2021-02-23
-output:
-  html_document:
-    df_print: paged
----
-
-
-
-
----
 title: "STA303/1002: Mixed assessment 1"
-subtitle: "Starship crew analysis"
 author: "Chief Science Officer Deen Xu; ID: 1003912769"
+date: 2021-02-23
 output:
   pdf_document: default
 urlcolor: blue
@@ -24,6 +12,8 @@ header-includes:
   - \fancyhead[LO, LE]{Deen Xu, 1003912769}
   - \fancyfoot[CO, CE]{\thepage \ of \pageref{LastPage}}
 ---
+
+
 
 | Information                         | Note                                                                                                                                                                                                       |
 |-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
