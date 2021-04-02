@@ -1,7 +1,7 @@
 ---
 title: "sta303_mixed_assignment_1"
 author: "Deen Xu"
-date: 2021-2-23
+date: 2021-02-23
 output:
   html_document:
     df_print: paged
