@@ -1,7 +1,7 @@
 ---
-title: "Finding the Effect of Low advertising Revenues on  News Content and Prices"
+title: "sta303_mixed_assignment_1"
 author: "Deen Xu"
-date: 2020-12-22
+date: 2021-2-23
 output:
   html_document:
     df_print: paged
@@ -11,112 +11,411 @@ subtitle: Topic C
 
 
 
-```{r, include=FALSE}
-library(kableExtra)
+---
+title: "STA303/1002: Mixed assessment 1"
+subtitle: "Starship crew analysis"
+author: "Chief Science Officer Deen Xu; ID: 1003912769"
+output:
+  pdf_document: default
+urlcolor: blue
+header-includes:    
+  - \usepackage{lastpage}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[LO, LE]{Deen Xu, 1003912769}
+  - \fancyfoot[CO, CE]{\thepage \ of \pageref{LastPage}}
+---
+
+| Information                         | Note                                                                                                                                                                                                       |
+|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Name                                | Mixed assignment 1                                                                                                                                                                                         |
+| Type                                | Type 2                                                                                                                                                                                                     |
+| Value                               | 14%                                                                                                                                                                                                        |
+| Due                                 | This untimed submission must be submitted by 4:30 p.m. ET Wednesday, Feb 24                                           |
+| Submission link                     | PDF & RMD: https://q.utoronto.ca/courses/204826/assignments/415116                                                                                                                                                                                                           |
+| Accommodations and extension policy | If you miss a type 2 assessment due to illness or a serious personal emergency, please complete [**this form**](https://forms.office.com/Pages/ResponsePage.aspx?id=JsKqeAMvTUuQN7RtVsVSEOKHUU3SzAJJhmOKjJhDWEpUQU1aRjI2SFpSSExZUVhVWEFYVU83VVg3Qy4u&wdLOR=c5814094D-026D-0544-AA8C-7C06129D1526) within ONE week of the due date of the assignment (i.e. the end of the timed assessment window). |
+|                                     |                                                                                                                                                                                                            |
+Mixed assessment 1 has two components:
+
+  - Untimed guided analysis (this)
+  - [Timed assessment](https://q.utoronto.ca/courses/204826/quizzes/139280) (50 minutes; 24-hour assessment window is 4:30 p.m. ET Tuesday, Feb 23 to 4:30 p.m. ET Wednesday, Feb 24)
+  - See the [mixed assessments overview page](https://q.utoronto.ca/courses/204826/pages/mixed-assessments) for further information and revisions links.
+  
+# Instructions
+1. Update the `yaml` at the top of this document to have your name and your student ID. There are TWO places you need to do this for each one, probably on lines 4 and 12. I.e., replace the square brackets and everything inside them with the appropriate details. Your student ID is all numbers (usually 10, sometimes 8 or 9), it is NOT your UTORid.
+2. Complete the guided analysis below. You will want to complete this BEFORE attempting your timed assessment.
+3. Complete your [timed assessment](https://q.utoronto.ca/courses/204826/quizzes/139280). It will require your work in this document, as well general STA303 content knowledge.
+4. Once you've written your code and are ready to knit change `knitr::opts_chunk$set(eval = FALSE)` to read `eval = TRUE` in the libraries chunk.
+5. Knit this .Rmd to .pdf and submit BOTH files to the submission link in the table above.
+
+Note: This component is ungraded BUT there is a 10-percentage point penalty for not submitting your .Rmd and .pdf to the Quercus dropbox by the end of the assessment window, i.e., by Wednesday, February 24 at 4:30 p.m. ET. The intention is to allow confirmation of your work for academic integrity purposes and/or if as a way to confirm your personalized data if there are issues.
+
+\newpage
+# Setting up your libraries
+
+If you are working on this on the Jupyter Hub, the `tidyverse`, `devtools`, `lme4`, `lattice` and `lmtest` packages will already be installed. If you're working locally, you'll have to install them first if they are not already installed. You will also need to install the `randomNames` package and the `myStarship` package from GitHub. All the code you need to do this is in the `setup` chunk below.
+
+```{r, setup, eval=FALSE, message=FALSE}
+# RUN THIS CHUNK FIRST! You should only need to run it once on your local machine.
+# On the JupyterHub, you may need to run it at the beginning of each new session.
+
+# These are the packages you will need for this activity.
+packages_needed <- c("tidyverse", "devtools", "lme4", 
+                     "lattice", "lmtest", "randomNames")
+
+package.check <- lapply(
+  packages_needed,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE, 
+      repos = "https://cloud.r-project.org/") # you may need to change the mirror if 
+      # you're in China (and potentially other countries.)
+      # Students in China have reported that 
+      # "https://mirrors.tuna.tsinghua.edu.cn/CRAN/" worked for them.
+    }
+  }
+)
+
+# Remove objects no longer needed
+rm(packages_needed, package.check)
+
+# You may be prompted to install or update additional packages
+# If so, you'll see a message in the console 
+# Type a enter/return in the console to skip updating
+devtools::install_github("elb0/myStarship", force = TRUE)
+
+```
+
+```{r, libraries, message=FALSE}
+# Run libraries for easy access to the functions we'll be using
 library(tidyverse)
-library(haven)
-library(ggplot2)
-data1 <- read_dta("C:/Users/jxude/Desktop/STA304/Final/116438-V1/data/dta/Angelucci_Cage_AEJMicro_dataset.dta")
-data2 <- read_dta("C:/Users/jxude/Desktop/STA304/Final/116438-V1/data/dta/Angelucci_Cage_AEJMicro_Descriptive_evidence_US.dta") 
-data1_new = na.omit(data1 
-                    %>% select(id_news, after_national, nb_journ, ln_ps_cst, ads_p4_cst, year) 
-                    %>% mutate_at(vars(id_news, after_national), ~as.factor(.)) 
-                    %>% mutate(year = as.integer(year)))
-```
-## Abstract
-This paper will reproduce the paper 'Newspapers And Advertising Revenues' by using the same dataset about French daily newspapers and French television from 1960 and 1974 to compute difference in differences estimates of the different effects of low advertising revenues caused by introduction of advertising on television on local and national News content and prices, and local Newspaper will be control group, national newspapers will be treatment group. The result shows the effect on national newspapers is more significant than on local newspapers.
+library(lme4)
+library(myStarship)
 
-## Key Words
-Economy, Newspaper Industry,Empirical Analysis, Difference in Difference
-
-
-## Introduction
-
-Due to major newspaper companies’ continuously decreasing in employment of journalists, smaller newsrooms, fewer investigative reporters, and increasing dependence on purchasing news from wire services, people have been concerning about if the newspaper industry can produce high quality news (Angelucci & Cagé, 2019). 
-
-```{r,echo=FALSE}
-n = "#69b3a2"
-journ = "#CD5C5C"
-data2 %>% ggplot(aes(x=year)) + 
-  geom_line( aes(y=newspapers,colour="Newspapers' advertising revenues"), size=2) + 
-  geom_line( aes(y=nb_journ/1.3,colour='Number of daily newspaper journalists'), size=2) + 
-  scale_y_continuous(sec.axis = sec_axis(~.*1.3, name = "Number of daily newspaper journalists")) + 
-  scale_colour_manual(values=c(n,journ))+ 
-  labs(y = "Million US$", x = "Years", colour = element_blank()) +
-  theme(legend.position = c(0.5, 0.2)) + 
-  ggtitle('Figure 1. Newspaper Advertising Revenues (in dollars) and Number of Journalists in the United States') + 
-  theme(plot.title = element_text(size = 8, face = "bold"))
-
+# Once you've updated the code and are ready to knit
+# change this to eval = TRUE
+knitr::opts_chunk$set(eval = TRUE)
 ```
 
-The trends in Figure 1 shows that from 1980 to 2015 in the United States, the average number of journalists per newspaper decreased while US newspaper advertising revenues decreased. One fact that causes newspaper advertising revenues to decrease is that the television advertisement becomes more popular and competitive. Moreover, increasing use of the internet could also cause the decreasing average number of journalists per newspaper. This paper aims to find out the effect of low advertising revenues on newspapers caused by advertisements on television, which can help us disentangle other factors that affect newspaper's advertising revenues such as new technology like the smartphone.
+\newpage
+# Get your data
 
-To reproducing the paper Newspapers in Times of Low Advertising Revenues written by Angelucci and Cag Cagé, this paper will use difference in differences method to examine the effect of television advertisement on newspaper by using a dataset of French newspapers between 1960 and 1974 provided by Angelucci and Cag Cagé. In the Methodology part, I will introduce the data and model I use to analyze Then, I will show and give a summary about the result of my model in results and discussion parts.
+**IMPORTANT** you must update your student ID in the function in the following chunk. You will be graded based on your *unique dataset* and so risk losing extensive marks if you use the wrong dataset.
 
-## Methodology
+```{r, getdata, eval=TRUE}
+# put your student ID in here
+get_my_starship(1003912769)
 
-The data I used is provided by Angelucci and Cagé, it includes annual data on local and national newspapers between 1960 and 1974. The dataset includes various variables about the newspaper such as its sale price, news hole, year published, and number of pages. But I choose some of them to fit my model. After my selection, it includes information about if the newspaper is both national and published after 1967, the number of journalists it published, its subscription price and listed advertisement price in Euros, and its publish year. 
-
-```{r, echo=FALSE}
-National = summary(na.omit(data1 %>% filter(national == 1) %>% select(nb_journ, ln_ps_cst, ads_p4_cst) %>% rename( 'Number of Journalists'=nb_journ ,  'Subscription Price' = ln_ps_cst ,  'Listed ad Price' = ads_p4_cst)))
-kable(National, caption = "National Newspaper") %>% kable_styling(bootstrap_options = "striped",
-                full_width = F)
-Local = summary(na.omit(data1 %>% filter(national != 1) %>% select(nb_journ, ln_ps_cst, ads_p4_cst) %>% rename( 'Number of Journalists'=nb_journ ,  'Subscription Price' = ln_ps_cst ,  'Listed ad Price' = ads_p4_cst)))
-kable(Local, caption = "Local Newspaper") %>% kable_styling(bootstrap_options = "striped",
-                full_width = F)
-```
-The two tables above show the characteristics of national and local newspapers' number of journalists, subscription price and listed advertising price.
-
-
-In 1967, the French government stated it would relax regulations on prohibiting television advertising for a long time, which means the newspaper's advertising revenue would go down after then. Also, since more people would choose publishing national advertising on television and national newspaper, the effect of the government announcement would have different effect on national and local newspapers.Then I want to use difference in differences method to find the different effect of reduced revenue caused by the government announcement on local and national newspaper content, sale price and advertising price. Next, I choose to use the logarithms of the dependent variable to fit linear regression models. The model is 
-$$ y_{n,t} = \alpha + \beta_1(D_{After} * D_{National}) + \lambda_n + \gamma_t + \epsilon_{n,t}$$
-The n and t means newspapers code and years from 1960 to 1974. And $\lambda_n$ and $\gamma_t$ are fixed effects. This approach prevents cross-sectional variations from driving our results (Angelucci & Cagé, 2019). $\epsilon_{n,t}$ is a newspaper-year shock. 
-The y is our response variable, I will choose the number of journalists, listed ad price and subscription price as response variables to find the effects on news content, ad price and sale price. The $D_{After} * D_{National}$ is the dummy variable, it is 1 when the newspaper was both national and published after 1967. Also, the coefficient $\beta_1$ represents the annual effect of the government announcement on national newspaper's response variables such as sale price compared to local newspapers. The $\alpha$ is the interpret variable.
-
-## Results
-```{r, include=FALSE }
-journ = lm(log(nb_journ)~after_national + id_news + year, data = data1_new)
-summary(journ)
-ad_price = lm(log(ads_p4_cst)~after_national + id_news + year, data = data1_new)
-summary(ad_price)
-sub_price = lm(ln_ps_cst~after_national + id_news + year, data = data1_new)
-summary(sub_price)
+# after you run this function, your unique dataset will appear in the environment
+# it will be called crew_data
 ```
 
-```{r, echo = FALSE}
-y = c("Number of Journalists", "Listed Ad Price", "Subscription Price")
-e = c('-0.151891***','-0.305949***','-0.03884.')
-year = c('0.038164***','0.049120***','0.04878***')
-r2 = c('0.9826','0.8777','0.8057')
-info = tibble("Response variable"= y, 'Estimator of after national' = e, 'Estimator of year' = year, 'R2'= r2)
+## The goal
 
-kable(info, caption = "Table 2   / *** p < 0.001; ** p < 0.01; * p < 0.05; . p > 0.05") %>% kable_styling(bootstrap_options = "striped",
-                full_width = F)
+You are the Chief Science Officer of the `r ship_name`. You have data about the productivity of the crew over a 12 week period after a shore leave (a holiday break for the crew). For each member of the crew you also have data on their `rank` within Starfleet, their role on the ship (`position`), which of the three main divisions (`division`) they are in (Command, Operations, Science), as well as their sub-division (`sub_division`, e.g. Engineering is a sub-division of Operations). You also know their `gender` (Feminine, Masculine, Non-binary), `name`, what their GPA upon graduating from Starfleet Academy was (`starfleet_gpa`, 0-10 scale, 10 being the best grade), their perseverance score (`perseverance_score`) from their most recent psych assessment (0-10 scale, 10 being high perseverance). `week` indicates the weeks since the shore leave (1 to 12) and their `productivity` score for each week is recorded.
+
+Each crewmember is assigned to a duty shift (`duty_shift`). There are four 8-hour shifts covering each 24 hour period, Alpha, Beta, Delta and Gamma. Within each duty shift, each crewmember is assigned to a team (`shift_team`). Teams are numbered 1 to 6, or sometimes fewer, and these labels aren't meaningful, they are just for administrative purposes. E.g., being Team 1 in Alpha shift has nothing to do with being Team 1 in Beta shift.  
+
+The crewmembers in Team 2 on the Gamma shift are assigned to work together as a unit, but they are only considered to be 'working' with other members of Team 2 on Gamma shift, not the rest of the Gamma shift, nor the crew in Team 2 of other shifts.
+
+Your goal is to better understand productivity aboard your ship. 
+
+```{r, eval=TRUE}
+glimpse(crew_data)
+```
+
+# Task set 1: familiarize yourself with the data
+
+1. What is the name of your ship? Hint: check out the object `ship_name`.
+
+```{r}
+ship_name
+```
+The name of my ship is SS prass
+
+2. What is the name of the Communications Officer?
+
+```{r}
+head(crew_data %>% filter(position == "Communications Officer") %>% select(name), 1)
+```
+The name is Tyra Hand
+
+3. How many crewmembers are in this dataset? 
+
+```{r}
+nrow(crew_data%>% group_by(name) %>% summarise())
+```
+There are 251 crewmember
+
+\newpage
+# Task set 2: create/alter variables
+
+1. The Records Officer lets your know that there is a typo in the crew dataset, where 'Engineering' has been misspelled somewhere, (maybe in one of the position titles?) but unfortunately they can't remember where or how. Find the mistake, fix it (and save that fix in the original `crew_data`) and then calculate what proportion of people in the Engineering subdivision have 'engineer' or 'engineering' in their position title. 
+
+```{r}
+crew_data = crew_data %>% 
+  mutate(position = str_replace(position,"Enigneering Technician", "Engineering Technician")) 
+n_eng_sub = nrow(crew_data%>% filter(sub_division == "Engineering")%>%group_by(name) %>% summarise())
+
+n_eng_pos = nrow(crew_data%>% filter(sub_division == "Engineering")%>% 
+            filter(position == "Engineer" | position == "Engineering Technician") %>% 
+              group_by(name) %>% summarise())
+
+n_eng_pos/n_eng_sub
+```
+
+2. Create a new variable in `crew_data` called `full_team` that indicates both the duty shift and the team each person is assigned to. 
+
+- You may find the `str_c()` function useful.
+- You can specify how the values you're sticking together are separated with the `sep` parameter, e.g., `str_c(var1, var2, sep = " ")` would put a space between the values of var1 and var2 when sticking them together.
+- Don't forget that `mutate()` helps you make new variables.
+
+```{r}
+crew_data = crew_data %>% mutate(full_team = str_c(duty_shift, shift_team, sep = " "))
+```
+
+\newpage
+# Task set 3: exploring week 1 data
+
+1. Create a new dataset called `week1` that filters to only the observations for week 1. You must also reverse the levels of the `duty_shift` factor in `week1` so that the order is: Gamma, Delta, Beta, Alpha. You can test if you've achieved this by running `table(week1$duty_shift)`. The table should be ordered with Gamma first.
+
+```{r}
+week1 = crew_data %>% filter(week == "1")
+
+week1$duty_shift = factor(week1$duty_shift, levels = c("Gamma", "Delta", "Beta", "Alpha"))
+
+table(week1$duty_shift)
+```
+
+2. Using the `week1` dataset you created, create a plot with `productivity` on the y-axis, `duty_shift` on the x-axis and coloured boxplots for each `shift_team`. Use the "Dark2" colour palette from colour brewer. 
+
+- geom_boxplot() is the geometry that creates boxplots.
+- use the colour aesthetic to get different boxplots for each `shift_team`
+- `scale_colour_brewer()` will allow you to choose the Dark2 palette (when completed appropriately).
+
+```{r}
+week1 %>% ggplot(aes(duty_shift, productivity, colour = shift_team)) + 
+  geom_boxplot() + scale_colour_brewer(palette = "Dark2")
+```
+
+3. Using the `week1` data, fit a linear model called `w1_shift` where `productivity` is the response and `duty_shift` is the only predictor. Run `summary` and `confint` on the model.
+
+```{r}
+w1_shift = lm(data = week1, productivity~duty_shift)
+summary(w1_shift)
+confint(w1_shift)
+```
+
+4. Fit three additional linear models and run summaries on them:
+
+  * Name the first model `w1_team`. It should have `productivity` as the response and then `shift_team` as the only predictor. `week1` is still the data to use.
+  * Name the first model `w1_int`. It should have `productivity` as the response and then the main effects and interaction of `duty_shift` and `shift_team` as the predictors. `week1` is still the data to use.
+  * Name the second model `w1_full`. It should have `productivity` as the response and `full_team` as the only predictor. `week1` is still the data to use.
+
+
+```{r}
+w1_team = lm(data = week1, productivity~shift_team)
+summary(w1_team)
+
+w1_int = lm(data = week1, productivity~duty_shift*shift_team)
+summary(w1_int)
+
+
+w1_full = lm(data = week1, productivity~full_team)
+summary(w1_full)
+```
+
+\newpage
+# Task set 4: productivity post shore leave
+
+1. Replace the 1s and add whatver other aesthetics are required in the aesthetic statement in the `ggplot()` function to recreate the graph below for your particular ship. Note that each line represents the productivity trend for one crewmember over the 12 week period.
+
+```{r}
+ crew_data %>% 
+  ggplot(aes(y = productivity, x = week, colour = division, group = name)) +
+  geom_line(stat="smooth", method = "lm", formula = 'y~x', alpha = 0.5) +
+  facet_grid(duty_shift~shift_team) +
+  scale_x_continuous(breaks = seq(2,12, by = 4)) +
+  theme_minimal()
+```
+
+
+(You can remove this image once you've made yours.)
+
+After discussing your investigation and the above graph with your Personnel Officer, they suggest you should _not_ include rank, position, division, sub-division or gender in your analysis. They also tell you that ship-to-ship, how duty shifts are set up and how teams are allocated differs quite a lot. Some ships have more than the 4 shifts yours does, or have many more teams due to size, etc.
+
+You're interested in presenting your work at the next Federation Science and Innovation Conference and want be able to provide information that might be relevant to the the Chief Science Officers on other ships, too.
+
+Below are several models that you've fit and some tests on them.
+
+```{r}
+# You can ignore this line, it is just to set things up so 
+# you hopefully don't get a convergence error.
+# If you do, don't worry about it if the model parameters are estimated.
+lmerControl(optCtrl=list(xtol_abs=1e-8, 
+                         ftol_abs=1e-8, 
+                         optimizer = "Nelder_Mead"))
+
+model_1a <- lmer(productivity ~ week + starfleet_gpa + perseverance_score +
+                   (1|name), 
+                 data = crew_data)
+
+model_1b <- lmer(productivity ~ week + starfleet_gpa + perseverance_score +
+                   (1 + week|name), 
+                 data = crew_data)
+
+# Study prompt: How do we interpret the p-values here? What is relevant?
+lmtest::lrtest(model_1a, model_1b)
+```
+The p-value is smaller than 0.05, which means we have strong evidence against
+that the simpler model 1a fits the data just as well. Model 1b is better.
+
+
+```{r}
+model_2a <- lmer(productivity ~ week + starfleet_gpa + perseverance_score + 
+                   (1 + week|name) + (1|duty_shift:shift_team), 
+                 data = crew_data)
+
+model_2b <- lmer(productivity ~ week + starfleet_gpa + perseverance_score + 
+                   (1 + week|name) + (1|full_team), 
+                 data = crew_data)
+
+# Study prompt: How do we interpret the p-values here? What is relevant?
+lmtest::lrtest(model_1b, model_2a)
+lmtest::lrtest(model_2a, model_2b)
+```
+The p-value is smaller than 0.05, which means we have strong evidence against
+that the simpler model model 1b fits the data just as well. Model 2a is better.
+
+The p-value is 1, which means model 2a and 2b are identical. We say model 2b is
+better since it is simpler than model 2a
+
+
+
+2. Determine which model from the above is the most appropriate out of those shown. Make appropriate alterations to `model_3` so that it will be the same as your chosen model with the addition of the term shown below, and uses the appropriate likelihood method to allow you to compare the models. 
+
+```{r, eval=FALSE}
+model_3 <- lmer(productivity ~ week + starfleet_gpa + perseverance_score + 
+                   (1 + week|name) + (1|full_team) + 
+                  (1 + week|full_team), 
+                 data = crew_data)
+
+lmtest::lrtest(model_2b, model_3)
+```
+The p-value is larger than 0.05, which means we have no evidence against
+that the simpler model model 2b fits the data just as well. Model 2b is better.
+
+3. Run `summary()` and `confint()` on whichever model you think is the most appropriate
+
+```{r}
+summary(model_2b)
+confint(model_2b)
+```
+
+
+\newpage
+# Task set 5: competitive astrobiologists
+
+While on shore leave, some of the astrobiologists had a little competition to see who could spot plants from the greatest number of __different planets or systems__ in the hotel gardens. Note: The _number_ of plants spotted doesn't actually matter as long as at least one was spotted.
+
+They have asked for your impartial help to find out who the winner is.
+
+You have three datasets:
+
+* `astrobiologists` is a list of all the astrobiology crewmembers
+* `competition_data` has the number of plants of each type that each participating astrobiologist recorded. 
+* `origin_data` contains information from the hotel about the plants in their collection and the the planets they are native to. They have warned you that is may be somewhat incomplete.
+
+```{r, astrobiology}
+astrobiologists <- crew_data %>% 
+  filter(position == "Astrobiologist") %>% 
+  distinct(crew_id, name, .keep_all=TRUE) %>% 
+  transmute(crewmember = str_c(name, " (", crew_id, ")"))
+
+competition_data <- tibble(crewmember = 
+                         c(astrobiologists$crewmember[1],
+                         astrobiologists$crewmember[2],
+                         astrobiologists$crewmember[3]),
+          `Xupta tree` = c(3L, 7L, NA),
+            `L'maki` = c(21L, NA, 21L),
+          `Leola root` = c(40L, 45L, 26L),
+            Klavaatu = c(2L, 3L, 2L),
+           Waterplum = c(NA, 5L, 1L),
+  `Folnar jewel plant` = c(17L, 12L, 10L),
+        `Felaran rose` = c(28L, 7L, NA),
+           Crystilia = c(12L, 3L, 9L),
+             Parthas = c(4L, 3L, NA),
+        `Borgia plant` = c(NA, 1L, 1L))
+
+
+origin_data <- data.frame(plant = c("Xupta tree","L'maki","Leola root",
+                                     "Waterplum","Vulcan orchid",
+                                     "Lunar flower","Garlanic tree",
+                                     "Folnar jewel plant",
+                                     "Felaran rose","Crystilia","Parthas",
+                                     "Borgia plant","Pod plant"),
+                      native_to = c("Orellius system","Delta Quadrant",
+                                     "Bajor","Mari","Vulcan",
+                                     NA,"Elaysian homeworld","Folnar III",
+                                     "Delta Quadrant","Telemarius IV",
+                                     "Acamar III","M-113",NA))
 
 ```
-The Table 2 summary shows the results of three linear regression models. From the table, we can see that compared to local newspapers, national newspaper's number of journalists, listed ad price and subscription price decrease by 15%, 31% and 4% after the government announcement respectively. 
 
-Also, according to the model, we can estimate that for one unit  increase in year, and hold all other variables constant, the newspaper's number of journalists, listed ad price and subscription price increase by 0.038, 0.049 and 0.049 respectively. 
+Tip: I recommend run `View()` on `competition_data` and `origin_data` to explore them further so you are familiar with their structure and contents. (You can also do this by clicking on their titles in the Environment pane.)
 
-Finally, the r square values for these three models are 0.9826, 0.8777, and 0.8057.
+1. Create a new dataset called `complete_comp` using the `competition_data`.
 
-## Discussion
+2. Assess whether `complete_comp`, at this current step, is currently tidy. (I.e., is `competition_data` tidy?) If yes, proceed. If no, alter it to be tidy. Specifically, it needs to be in the correct format to be useful for merging the `origin_data` on to it.
 
-The results of three linear relation models indicate that the effect of television advertising in France has a larger impact on national newspaper content and listed ad price compared to local newspaper, and similar impact on sale price.
+3. Continuing to manipulate the `complete_comp` object, merge on the `origin_data` such that any plants __not__ present in the data provided by the hotel are __dropped__.
 
-According to the models, the p-value of the predicted variable for both the number of journalists and listed ad price model are all smaller than 0.05, then we can see there is strong evidence against the hypothesis that the estimators are zero. But the p-value of the estimator for subscription is bigger than 0.05, then we do not have strong evidence against the hypothesis that the estimator is zero. Therefore, we can say the effects on the number of journalists and listed ad prices are different for national and local newspapers, but have similar effect on sale price. And p-values for the year in three models are all smaller than 0.05, then we have strong evidence against the hypothesis that the estimators are zero in these three models.
+4. Restrict the `complete_comp` so it only contains rows where at least one plant was spotted.
 
-Moreover, the r square values indicate all three response variables have strong positive linear relationship with predictor variables.
+5. Restrict the `complete_comp` to just observations from distinct planets or systems for each crewmember. (See hint code below.)
 
-This analysis bases on a dataset about French from 1960 to 1974, which could be a outdated dataset, which we could not apply for nowadays situations since there are more influential variables such as technology improvement. To improve this, we can investigate the technology effect on newspaper's content and price. We can collect a new dataset from newspaper, television companies, and smart phone companies, which includes data about newspapers after the first smartphone published. Then we can use similar difference in differences method to analyze the effect of technology improvement on both local and national newspaper.
+6. Calculate how many unique planets or systems each astrobiologist spotted at least one plant from.
 
-## References
+You DO NOT have to use the exact same code I do to get the associated questions in the timed component correct, as long as it fulfills these instructions, in the correct order. As a hint, here is the structure of my code to complete these tasks.
 
-Angelucci, C., & Cagé, J. (2019). Newspapers in Times of Low Advertising 
-  Revenues. American Economic Journal: Microeconomics, 11(3), 319–364. 
-  https://doi.org/10.1257/mic.20170306
+```
+complete_comp <- competition_data %>% 
+  ___________________ %>% 
+  ___________________ %>% 
+  ___________________ %>% 
+  distinct(crewmember, native_to) %>% # this line will achieve instruction 5
+  ___________________ %>% # these last two lines achieve instruction 6, 
+  ___________________ # but could be done in only one line also
+```
 
-Alexander, R. (2020, November). Difference in differences. Telling Stories With Data.    https://www.tellingstorieswithdata.com/
+```{r}
+complete_comp <- competition_data %>% 
+  pivot_longer(!crewmember,names_to = "plant", values_to = "count" )
+complete_comp <- left_join(origin_data, complete_comp, by = "plant") %>% 
+  filter(!is.na(count)) %>%
+  distinct(crewmember, native_to) %>%
+  group_by(crewmember) %>%
+  summarise("Unique planets spotted" = n() )
 
-  
-  
+complete_comp
+```
+
+\newpage
+# Task set 6: make your Statistician's life easier
+
+Suppose you were trying to run the following code. It throws an error. (Note: DON'T fix the error, that isn't the point of this activity.) Create a reprex (a reproducible example, see week 1) with everything required for your statistician to reproduce this error. The only 'error' in the output should be the one produced by _this_ code. (Hint: there is a library you should include, and you'll also need to provide the data. Once you've copied the complete code for the reprex to your clipboard, you can then run `reprex()` and the content for your reprex will then be added to you clipboard, (i.e., with Ctrl+V or Cmd+V you can paste it.))
+
+```{r, error=TRUE}
+origin_data %>% 
+  filter(nativeto == "Delta Quadrant")
+```
+
+```{r, reprex}
+
+library(reprex)
+
+reprex()
+```
+
+END
+
