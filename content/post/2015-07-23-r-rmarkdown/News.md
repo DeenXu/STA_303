@@ -1,4 +1,3 @@
-
 ---
 title: "The Effects of Low Advertising Revenues on News Content and Prices"
 author: "Deen Xu"
