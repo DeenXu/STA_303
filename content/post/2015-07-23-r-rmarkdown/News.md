@@ -1,12 +1,15 @@
+
 ---
 title: "The Effects of Low Advertising Revenues on News Content and Prices"
 author: "Deen Xu"
-
-output:
-  html_document:
-    df_print: paged
 date: 2021-12-22
+output:
+  pdf_document: default
 ---
+
+
+
+
 
 You can find the output of this report as a pdf file in this website https://1drv.ms/b/s!AkWfBn3mQ8o6pnSP1ThLkDQv70DI
 
