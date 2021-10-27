@@ -7,7 +7,9 @@ Yinghan Zhang
 "
 date: 2021-05-01
 ---
-You can find all the visulizations we methonded this report in this website https://deenxu.github.io/visualization/
+
+You can find all the visualizations we mentioned in this report in this website https://deenxu.github.io/visualization/
+
 
 Overview: 
 In the human history, discrimination and inequality have always been a issue in several dimensions. For the past few decades, news about people being treated harshly due to their gender or race has brought more attention to our communities. These negative impressions are locked in our memory and become a stereotype. Even though many people believe that it is morally wrong to judge people based on their appearance, the stereotypes are unintentionally influencing their decisions, especially in the job market. Now we live in the 21th century, do people still treat others differently due to their gender? This is the answer that we are looking for today and we will be specifically looking at the gender injustice in Canada’s workplaces. Our goal for this project is to give Canadian citizens an idea of how our society is treating people differently by gender. We want more people to know whether these stereotypes will make companies pay people differently or we live in a society that everyone is being treated equally.
