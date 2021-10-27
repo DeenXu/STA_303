@@ -15,7 +15,7 @@ titlepage-text-color: "FFFFFF"
 titlepage-rule-color: "FFFFFF"
 titlepage-rule-height: 2
 ---
-You find the output of this report as a pdf file in this website https://1drv.ms/b/s!AkWfBn3mQ8o6pnVtE2C2bhJs1yH-
+You can find the output of this report as a pdf file in this website https://1drv.ms/b/s!AkWfBn3mQ8o6pnVtE2C2bhJs1yH-
 
 ```{r, message = FALSE, echo=FALSE}
 library(tidyverse)
