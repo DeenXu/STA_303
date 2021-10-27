@@ -8,7 +8,7 @@ output:
 subtitle: Topic C
 ---
 
-You find the output of this report as a pdf file in this website https://1drv.ms/b/s!AkWfBn3mQ8o6pnSP1ThLkDQv70DI
+You can find the output of this report as a pdf file in this website https://1drv.ms/b/s!AkWfBn3mQ8o6pnSP1ThLkDQv70DI
 
 
 ```{r, include=FALSE}
