@@ -1,18 +1,9 @@
 ---
-title: "STA 303 Data Exploration"
+title: "The Effects of Low Advertising Revenues on News Content and Prices"
 author: "Deen Xu"
-date: 2021-02-14
-
+date: 2021-12-22
 output:
   pdf_document: default
-urlcolor: blue
-header-includes:    
-  - \usepackage{lastpage}
-  - \usepackage{fancyhdr}
-  - \pagestyle{fancy}
-  - \fancyhead[CO, CE]{Deen Xu, 1003912769}
-  - \fancyfoot[CO, CE]{\thepage \ of \pageref{LastPage}}
-  
 ---
 
 
