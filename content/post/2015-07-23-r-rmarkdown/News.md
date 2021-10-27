@@ -1,5 +1,5 @@
 ---
-title: "Finding the Effect of Low Advertising Revenues on News Content and Prices"
+title: "The Effects of Low Advertising Revenues on News Content and Prices"
 author: "Deen Xu"
 date: "2021-12-22"
 output:
